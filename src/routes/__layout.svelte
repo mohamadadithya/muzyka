@@ -1,0 +1,30 @@
+<script>
+	import '../assets/css/main.css';
+</script>
+
+<svelte:head>
+	<title>Muzyka</title>
+	<link
+		href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@4cac1a6/css/all.css"
+		rel="stylesheet"
+		type="text/css"
+	/>
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link
+		href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;700&display=swap"
+		rel="stylesheet"
+	/>
+</svelte:head>
+
+<main>
+	<slot />
+</main>
+
+<style>
+	main {
+		display: grid;
+		place-items: center;
+		height: 100vh;
+	}
+</style>
