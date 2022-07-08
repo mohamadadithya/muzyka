@@ -1,34 +1,47 @@
 <script>
 	import { formatDuration } from './../helpers/format.js';
 	import { onMount } from 'svelte';
-	import { source, title, isPlay, artist, albumCover, album } from '../stores/song';
-	import SongBar from "../components/SongBar.svelte";
-    import { songs } from '../data/songs';
+	import {
+		source,
+		title,
+		isPlay,
+		artist,
+		albumCover,
+		album,
+		isLoaded,
+		index
+	} from '../stores/song';
+	import SongBar from '../components/SongBar.svelte';
+	import { songs } from '../data/songs';
+	import { onEndedSong } from '../helpers/song';
 
-	let time = 0, muted = false, volume = 1, currentVolume, volumeSlider, ended, slider, duration, audio, index;
+	let time = 0,
+		muted = false,
+		volume = 1,
+		currentVolume,
+		volumeSlider,
+		ended,
+		slider,
+		duration,
+		audio;
 
 	onMount(() => {
 		audio.onended = async () => {
 			isPlay.set(false);
 			time = 0;
-			let nextSong = index + 1;
+			let nextSong = $index + 1;
+			index.set(nextSong);
 			let lastSong = songs.length - 1;
-			if(index > lastSong) {
-				nextSong = 0;
+			if (nextSong > lastSong) {
+				onEndedSong(0, audio);
 			} else {
-				title.set(songs[nextSong].title);
-				artist.set(songs[nextSong].artist);
-				album.set(songs[nextSong].album.name);
-				albumCover.set(songs[nextSong].album.cover);
-				await source.set(songs[nextSong].filename);
-				await audio.paused ? audio.play() : audio.pause();
-				await audio.paused ? isPlay.set(false) : isPlay.set(true);
+				onEndedSong(nextSong, audio);
 			}
-		}
+		};
 	});
 
 	const playAudio = () => {
-		if($source) {
+		if ($source) {
 			audio.paused ? audio.play() : audio.pause();
 			audio.paused ? isPlay.set(false) : isPlay.set(true);
 		} else {
@@ -38,28 +51,28 @@
 
 	const seek = () => (time = slider.value);
 
-	const seekVolume = () => audio.volume = volumeSlider.value;
+	const seekVolume = () => (audio.volume = volumeSlider.value);
 	const muteVolume = () => {
 		muted = !muted;
-		if(muted) {
+		if (muted) {
 			currentVolume = volumeSlider.value;
 			volume = 0;
 			volumeSlider.value = 0;
 		} else {
 			volumeSlider.value = currentVolume;
 		}
-	}
+	};
 
 	const changeSong = async ({ song }, i) => {
-		index = i;
+		index.set(i);
 		title.set(song.title);
 		artist.set(song.artist);
 		album.set(song.album.name);
-	    albumCover.set(song.album.cover);
+		albumCover.set(song.album.cover);
 		await source.set(song.filename);
-		await audio.paused ? audio.play() : audio.pause();
-		await audio.paused ? isPlay.set(false) : isPlay.set(true);
-	}
+		(await audio.paused) ? audio.play() : audio.pause();
+		(await audio.paused) ? isPlay.set(false) : isPlay.set(true);
+	};
 </script>
 
 <div class="container">
@@ -87,8 +100,19 @@
 			<button type="button"><i class="fas fa-fw fa-forward" /></button>
 		</div>
 		<div class="card__actions--volume">
-			<button type="button" on:click={muteVolume}><i class="fas fa-fw fa-volume-{muted ? 'mute' : 'up'}"></i></button>
-			<input type="range" class="card__slider card__slider--volume" min="0" on:input={seekVolume} bind:this={volumeSlider} value={volume} max="1" step=".001">
+			<button type="button" on:click={muteVolume}
+				><i class="fas fa-fw fa-volume-{muted ? 'mute' : 'up'}" /></button
+			>
+			<input
+				type="range"
+				class="card__slider card__slider--volume"
+				min="0"
+				on:input={seekVolume}
+				bind:this={volumeSlider}
+				value={volume}
+				max="1"
+				step=".001"
+			/>
 		</div>
 		<button class="card__playlist-button">See Playlist</button>
 	</div>
@@ -109,6 +133,7 @@
 	bind:muted
 	bind:currentTime={time}
 	bind:this={audio}
+	on:loadeddata={() => isLoaded.set(true)}
 	src={$source}
 />
 
@@ -151,7 +176,7 @@
 		height: 5px;
 		cursor: pointer;
 	}
-	
+
 	.card .card__slider--duration {
 		width: 100%;
 		margin-top: 10px;
@@ -185,8 +210,7 @@
 
 	.card button:is(.play) {
 		background: linear-gradient(145deg, #fefefe, #d5d5d5);
-		box-shadow:  20px 20px 100px #a8a8a8,
-             -20px -20px 100px #ffffff;
+		box-shadow: 20px 20px 100px #a8a8a8, -20px -20px 100px #ffffff;
 	}
 
 	.card button:not(.play) {
@@ -207,16 +231,16 @@
 
 	/* Playlist Panel */
 	.card-playlist > h1 {
-        font-weight: 600;
-        font-size: 1.5rem;
-        text-transform: uppercase;
-        letter-spacing: 0.2em;
-    }
+		font-weight: 600;
+		font-size: 1.5rem;
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+	}
 
-    .card-playlist > p {
-        color: gray;
-        margin-bottom: 1em;
-    }
+	.card-playlist > p {
+		color: gray;
+		margin-bottom: 1em;
+	}
 
 	@media (min-width: 768px) {
 		.container {
@@ -237,5 +261,4 @@
 			align-items: flex-start;
 		}
 	}
-
 </style>
