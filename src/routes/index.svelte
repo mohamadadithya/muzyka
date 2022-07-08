@@ -5,12 +5,25 @@
 	import SongBar from "../components/SongBar.svelte";
     import { songs } from '../data/songs';
 
-	let time = 0, muted = false, volume = 1, currentVolume, volumeSlider, ended, slider, duration, audio;
+	let time = 0, muted = false, volume = 1, currentVolume, volumeSlider, ended, slider, duration, audio, index;
 
 	onMount(() => {
-		audio.onended = () => {
+		audio.onended = async () => {
 			isPlay.set(false);
 			time = 0;
+			let nextSong = index + 1;
+			let lastSong = songs.length - 1;
+			if(index > lastSong) {
+				nextSong = 0;
+			} else {
+				title.set(songs[nextSong].title);
+				artist.set(songs[nextSong].artist);
+				album.set(songs[nextSong].album.name);
+				albumCover.set(songs[nextSong].album.cover);
+				await source.set(songs[nextSong].filename);
+				await audio.paused ? audio.play() : audio.pause();
+				await audio.paused ? isPlay.set(false) : isPlay.set(true);
+			}
 		}
 	});
 
@@ -37,7 +50,8 @@
 		}
 	}
 
-	const changeSong = async ({ song }) => {
+	const changeSong = async ({ song }, i) => {
+		index = i;
 		title.set(song.title);
 		artist.set(song.artist);
 		album.set(song.album.name);
@@ -83,8 +97,8 @@
 		<h1>My Playlist</h1>
 		<p>20 Songs</p>
 		<div class="card__container">
-			{#each songs as song}
-				<SongBar on:click={() => changeSong({ song })} {song} />
+			{#each songs as song, i}
+				<SongBar on:click={() => changeSong({ song }, i)} {song} />
 			{/each}
 		</div>
 	</div>
