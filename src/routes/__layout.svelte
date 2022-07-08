@@ -23,8 +23,8 @@
 
 <style>
 	main {
-		display: grid;
-		place-items: center;
-		min-height: 100vh;
+		padding: 2em;
+		max-width: 800px;
+		margin: 0 auto;
 	}
 </style>

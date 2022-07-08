@@ -1,7 +1,7 @@
 export const songs = [
     {
         title: 'Hats Off to (Roy) Harper',
-        filename: 'hats-off-to-roy-harper',
+        filename: 'https://dl.dropboxusercontent.com/s/ifpkky6arol1nho/hats-off-to-roy-harper.mp3?dl=0',
         artist: 'Led Zeppelin',
         album: {
             name: 'Led Zeppelin III',
@@ -10,7 +10,7 @@ export const songs = [
     },
     {
         title: 'Little Wing',
-        filename: 'little-wing',
+        filename: 'https://dl.dropboxusercontent.com/s/z6yfgjfhlds8964/little-wing.mp3?dl=0',
         artist: 'Jimi Hendrix',
         album: {
             name: 'Axis: Bold As Love',

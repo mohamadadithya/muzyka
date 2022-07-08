@@ -1,4 +1,6 @@
 <script>
+    import { isPlay, title } from "../stores/song";
+
     export let song;
 </script>
 
@@ -10,13 +12,14 @@
             <p>{song.artist}</p>
         </div>
     </div>
-    <button type="button">
-        <i class="fas fa-fw fa-play"></i>
+    <button type="button" on:click>
+        <i class="fas fa-fw fa-{$isPlay && song.title == $title ? 'pause' : 'play'}"></i>
     </button>
 </div>
 
 <style>
     .card {
+        background-color: white;
         display: flex;
         justify-content: space-between;
         align-items: center;

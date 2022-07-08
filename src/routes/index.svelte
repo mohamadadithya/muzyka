@@ -1,22 +1,26 @@
 <script>
 	import { formatDuration } from './../helpers/format.js';
 	import { onMount } from 'svelte';
-	import Playlist from '../components/Playlist.svelte';
+	import { source, title, isPlay, artist, albumCover, album } from '../stores/song';
+	import SongBar from "../components/SongBar.svelte";
+    import { songs } from '../data/songs';
 
-	let isPlay = false;
-	let time = 0;
-	let muted = false;
-	let volume = 1;
-	let currentVolume;
-	let volumeSlider;
-	let ended;
-	let slider;
-	let duration;
-	let audio;
+	let time = 0, muted = false, volume = 1, currentVolume, volumeSlider, ended, slider, duration, audio;
+
+	onMount(() => {
+		audio.onended = () => {
+			isPlay.set(false);
+			time = 0;
+		}
+	});
 
 	const playAudio = () => {
-		audio.paused ? audio.play() : audio.pause();
-		isPlay = !isPlay;
+		if($source) {
+			audio.paused ? audio.play() : audio.pause();
+			audio.paused ? isPlay.set(false) : isPlay.set(true);
+		} else {
+			alert('Please pick a song!');
+		}
 	};
 
 	const seek = () => (time = slider.value);
@@ -33,19 +37,22 @@
 		}
 	}
 
-	onMount(() => {
-		audio.onended = () => {
-			isPlay = false;
-			time = 0;
-		}
-	});
+	const changeSong = async ({ song }) => {
+		title.set(song.title);
+		artist.set(song.artist);
+		album.set(song.album.name);
+	    albumCover.set(song.album.cover);
+		await source.set(song.filename);
+		await audio.paused ? audio.play() : audio.pause();
+		await audio.paused ? isPlay.set(false) : isPlay.set(true);
+	}
 </script>
 
 <div class="container">
 	<div class="card">
-		<h1 class="card__title">Hats Off to (Roy) Harper</h1>
-		<p class="card__artist">Led Zeppelin</p>
-		<img class="card__album" draggable="false" src="/img/led-zeppelin-3.jpeg" alt="Led Zeppelin III" />
+		<h1 class="card__title">{$title}</h1>
+		<p class="card__artist">{$artist}</p>
+		<img class="card__album" draggable="false" src="/img/{$albumCover}" alt={$album} />
 		<input
 			type="range"
 			on:input={seek}
@@ -61,7 +68,7 @@
 		<div class="card__actions">
 			<button type="button"><i class="fas fa-fw fa-backward" /></button>
 			<button type="button" on:click={playAudio} class="play"
-				><i class="fas fa-fw fa-{!isPlay || ended ? 'play' : 'pause'}" /></button
+				><i class="fas fa-fw fa-{!$isPlay || ended ? 'play' : 'pause'}" /></button
 			>
 			<button type="button"><i class="fas fa-fw fa-forward" /></button>
 		</div>
@@ -71,7 +78,16 @@
 		</div>
 		<button class="card__playlist-button">See Playlist</button>
 	</div>
-	<Playlist />
+	<!-- Playlist Panel -->
+	<div class="card-playlist">
+		<h1>My Playlist</h1>
+		<p>20 Songs</p>
+		<div class="card__container">
+			{#each songs as song}
+				<SongBar on:click={() => changeSong({ song })} {song} />
+			{/each}
+		</div>
+	</div>
 </div>
 <audio
 	bind:duration
@@ -79,24 +95,24 @@
 	bind:muted
 	bind:currentTime={time}
 	bind:this={audio}
-	src="/songs/hats-off-to-roy-harper.mp3"
+	src={$source}
 />
 
 <style>
 	.container {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
+		display: block;
 	}
 	.card {
 		display: flex;
 		align-items: center;
 		flex-direction: column;
-		max-width: 320px;
+		widows: 100%;
 		max-height: 100%;
 		padding: 1.6em 1.2em;
 		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 		background-color: white;
 		border-radius: 1em;
+		margin-bottom: 3em;
 	}
 
 	.card .card__album {
@@ -174,4 +190,38 @@
 	.card .card__minutes > p {
 		color: gray;
 	}
+
+	/* Playlist Panel */
+	.card-playlist > h1 {
+        font-weight: 600;
+        font-size: 1.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+    }
+
+    .card-playlist > p {
+        color: gray;
+        margin-bottom: 1em;
+    }
+
+	@media (min-width: 768px) {
+		.container {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			align-items: center;
+			min-height: 100vh;
+			gap: 2.5em;
+		}
+
+		.card {
+			margin-bottom: 0;
+		}
+	}
+
+	@media (min-width: 992px) {
+		.container {
+			align-items: flex-start;
+		}
+	}
+
 </style>
