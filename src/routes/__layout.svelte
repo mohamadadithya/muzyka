@@ -12,7 +12,7 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 	<link
-		href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;700&display=swap"
+		href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap"
 		rel="stylesheet"
 	/>
 </svelte:head>
@@ -25,6 +25,6 @@
 	main {
 		display: grid;
 		place-items: center;
-		height: 100vh;
+		min-height: 100vh;
 	}
 </style>

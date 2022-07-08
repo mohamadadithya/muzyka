@@ -1,0 +1,62 @@
+<script>
+    export let song;
+</script>
+
+<div class="card">
+    <div class="card__info">
+        <img src="/img/{song.album.cover}" alt={song.album.name}>
+        <div class="card__info--details">
+            <h5>{song.title}</h5>
+            <p>{song.artist}</p>
+        </div>
+    </div>
+    <button type="button">
+        <i class="fas fa-fw fa-play"></i>
+    </button>
+</div>
+
+<style>
+    .card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1em;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        border-radius: 1em;
+        margin-bottom: 1em;
+    }
+
+    .card > .card__info {
+        margin-right: .8em;
+    }
+
+    .card > .card__info > img {
+        width: 50px;
+        margin-right: 10px;
+        border-radius: .3em;
+    }
+
+    .card > .card__info {
+        display: flex;
+        align-items: center;
+    }
+
+    .card h5 {
+        font-weight: 500;
+        overflow: hidden;
+        width: 200px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .card p {
+        color: gray;
+        font-size: .8rem;
+    }
+
+    .card > button {
+        border: 1px solid gray;
+        border-radius: 50%;
+        padding: .5em;
+    }
+</style>
