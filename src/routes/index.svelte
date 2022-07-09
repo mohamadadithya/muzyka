@@ -14,6 +14,8 @@
 	import SongBar from '../components/SongBar.svelte';
 	import { songs } from '../data/songs';
 	import { onEndedSong } from '../helpers/song';
+	import { Notyf } from 'notyf';
+	import 'notyf/notyf.min.css';
 
 	let time = 0,
 		muted = false,
@@ -32,7 +34,8 @@
 			let nextSong = $index + 1;
 			index.set(nextSong);
 			let lastSong = songs.length - 1;
-			if (nextSong > lastSong) {
+			if ($index > lastSong) {
+				index.set(0);
 				onEndedSong(0, audio);
 			} else {
 				onEndedSong(nextSong, audio);
@@ -45,12 +48,24 @@
 			audio.paused ? audio.play() : audio.pause();
 			audio.paused ? isPlay.set(false) : isPlay.set(true);
 		} else {
-			alert('Please pick a song!');
+			const notyf = new Notyf({
+				position: {
+					x: 'right',
+					y: 'top'
+				},
+				types: [
+					{
+						type: 'error',
+						background: 'black',
+						duration: 2000
+    				}
+				]
+			});
+			notyf.error('Please pick a song');
 		}
 	};
 
 	const seek = () => (time = slider.value);
-
 	const seekVolume = () => (audio.volume = volumeSlider.value);
 	const muteVolume = () => {
 		muted = !muted;
@@ -119,7 +134,7 @@
 	<!-- Playlist Panel -->
 	<div class="card-playlist">
 		<h1>My Playlist</h1>
-		<p>20 Songs</p>
+		<p>{songs.length} {songs.length === 1 ? 'song' : 'songs'}</p>
 		<div class="card__container">
 			{#each songs as song, i}
 				<SongBar on:click={() => changeSong({ song }, i)} {song} />
