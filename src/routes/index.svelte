@@ -99,8 +99,6 @@
 			showError();
 		}
 	};
-
-	let cardHeight;
 </script>
 
 <svelte:head>
@@ -108,7 +106,7 @@
 </svelte:head>
 
 <div class="container">
-	<div class="card" bind:clientHeight={cardHeight}>
+	<div class="card">
 		<h1 class="card__title">{$title}</h1>
 		<p class="card__artist">{$artist}</p>
 		<img class="card__album" draggable="false" src="/img/{$albumCover}" alt={$album} />
@@ -148,7 +146,7 @@
 		</div>
 	</div>
 	<!-- Playlist Panel -->
-	<div class="card-playlist" style="height: {cardHeight}px;">
+	<div class="card-playlist" style="height: 556px;">
 		<div class="card-playlist__header">
 			<h1>My Playlist</h1>
 			<p>{songs.length} {songs.length === 1 ? 'song' : 'songs'}</p>
