@@ -56,7 +56,7 @@
 	.card h5 {
 		font-weight: 500;
 		overflow: hidden;
-		width: 200px;
+		width: 120px;
 		white-space: nowrap;
 		text-overflow: ellipsis;
 	}
