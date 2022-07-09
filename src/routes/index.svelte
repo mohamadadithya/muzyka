@@ -104,7 +104,7 @@
 </script>
 
 <svelte:head>
-	<title>{$title} - {$artist} | Muzyka</title>
+	<title>{$source ? `${$title} - ${$artist} | Muzyka` : 'Muzyka'}</title>
 </svelte:head>
 
 <div class="container">
