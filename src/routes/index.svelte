@@ -13,9 +13,7 @@
 	} from '../stores/song';
 	import SongBar from '../components/SongBar.svelte';
 	import { songs } from '../data/songs';
-	import { onEndedSong } from '../helpers/song';
-	import { Notyf } from 'notyf';
-	import 'notyf/notyf.min.css';
+	import { onEndedSong, showError } from '../helpers/song';
 
 	let time = 0,
 		muted = false,
@@ -48,20 +46,7 @@
 			audio.paused ? audio.play() : audio.pause();
 			audio.paused ? isPlay.set(false) : isPlay.set(true);
 		} else {
-			const notyf = new Notyf({
-				position: {
-					x: 'right',
-					y: 'top'
-				},
-				types: [
-					{
-						type: 'error',
-						background: 'black',
-						duration: 2000
-    				}
-				]
-			});
-			notyf.error('Please pick a song');
+			showError();
 		}
 	};
 
@@ -88,10 +73,42 @@
 		(await audio.paused) ? audio.play() : audio.pause();
 		(await audio.paused) ? isPlay.set(false) : isPlay.set(true);
 	};
+
+	const lastSong = songs.length - 1;
+
+	const prevSong = () => {
+		if ($source) {
+			index.set($index - 1);
+			if ($index < 0) {
+				index.set(lastSong);
+			}
+			onEndedSong($index, audio);
+		} else {
+			showError();
+		}
+	};
+
+	const nextSong = () => {
+		if ($source) {
+			index.set($index + 1);
+			if ($index > lastSong) {
+				index.set(0);
+			}
+			onEndedSong($index, audio);
+		} else {
+			showError();
+		}
+	};
+
+	let cardHeight;
 </script>
 
+<svelte:head>
+	<title>{$title} - {$artist} | Muzyka</title>
+</svelte:head>
+
 <div class="container">
-	<div class="card">
+	<div class="card" bind:clientHeight={cardHeight}>
 		<h1 class="card__title">{$title}</h1>
 		<p class="card__artist">{$artist}</p>
 		<img class="card__album" draggable="false" src="/img/{$albumCover}" alt={$album} />
@@ -108,11 +125,11 @@
 			<p>{formatDuration(duration)}</p>
 		</div>
 		<div class="card__actions">
-			<button type="button"><i class="fas fa-fw fa-backward" /></button>
+			<button type="button" on:click={prevSong}><i class="fas fa-fw fa-backward" /></button>
 			<button type="button" on:click={playAudio} class="play"
 				><i class="fas fa-fw fa-{!$isPlay || ended ? 'play' : 'pause'}" /></button
 			>
-			<button type="button"><i class="fas fa-fw fa-forward" /></button>
+			<button type="button" on:click={nextSong}><i class="fas fa-fw fa-forward" /></button>
 		</div>
 		<div class="card__actions--volume">
 			<button type="button" on:click={muteVolume}
@@ -129,13 +146,14 @@
 				step=".001"
 			/>
 		</div>
-		<button class="card__playlist-button">See Playlist</button>
 	</div>
 	<!-- Playlist Panel -->
-	<div class="card-playlist">
-		<h1>My Playlist</h1>
-		<p>{songs.length} {songs.length === 1 ? 'song' : 'songs'}</p>
-		<div class="card__container">
+	<div class="card-playlist" style="height: {cardHeight}px;">
+		<div class="card-playlist__header">
+			<h1>My Playlist</h1>
+			<p>{songs.length} {songs.length === 1 ? 'song' : 'songs'}</p>
+		</div>
+		<div class="card-playlist__container" style="padding-bottom: {songs.length > 5 ? '0.9em' : 0};">
 			{#each songs as song, i}
 				<SongBar on:click={() => changeSong({ song }, i)} {song} />
 			{/each}
@@ -156,6 +174,7 @@
 	.container {
 		display: block;
 	}
+
 	.card {
 		display: flex;
 		align-items: center;
@@ -232,27 +251,40 @@
 		background: none;
 	}
 
-	.card .card__playlist-button {
-		margin-top: 2em;
-		background: none;
-		text-transform: uppercase;
-		letter-spacing: 0.2em;
-		color: gray;
-	}
-
 	.card .card__minutes > p {
 		color: gray;
 	}
 
 	/* Playlist Panel */
-	.card-playlist > h1 {
+	.card-playlist {
+		overflow-y: scroll;
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
+	}
+
+	.card-playlist .card-playlist__container {
+		padding: 0 0.3em 0 0.3em;
+	}
+
+	.card-playlist::-webkit-scrollbar {
+		display: none;
+	}
+
+	.card-playlist .card-playlist__header {
+		position: sticky;
+		top: 0;
+		width: 100%;
+		background-color: white;
+	}
+
+	.card-playlist .card-playlist__header > h1 {
 		font-weight: 600;
 		font-size: 1.5rem;
 		text-transform: uppercase;
 		letter-spacing: 0.2em;
 	}
 
-	.card-playlist > p {
+	.card-playlist .card-playlist__header > p {
 		color: gray;
 		margin-bottom: 1em;
 	}
@@ -273,7 +305,7 @@
 
 	@media (min-width: 992px) {
 		.container {
-			align-items: flex-start;
+			align-items: center;
 		}
 	}
 </style>

@@ -45,5 +45,5 @@ export const songs = [
             name: 'Let it Bleed',
             cover: 'let-it-bleed.jpg'
         }
-    },
+    }
 ]

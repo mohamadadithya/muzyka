@@ -38,6 +38,10 @@
 		margin-bottom: 1em;
 	}
 
+	.card:last-child {
+		margin-bottom: 0;
+	}
+
 	.card > .card__info {
 		margin-right: 0.8em;
 	}

@@ -27,4 +27,10 @@
 		max-width: 800px;
 		margin: 0 auto;
 	}
+
+	@media (min-width: 768px) {
+		main {
+			padding: 0 2em;
+		}
+	}
 </style>
