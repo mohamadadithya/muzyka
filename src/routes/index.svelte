@@ -9,11 +9,12 @@
 		albumCover,
 		album,
 		isLoaded,
-		index
+		index,
+		playMode
 	} from '../stores/song';
 	import SongBar from '../components/SongBar.svelte';
 	import { songs } from '../data/songs';
-	import { onEndedSong, showError } from '../helpers/song';
+	import { onEndedSong, PLAY_MODE, showError } from '../helpers/song';
 
 	let time = 0,
 		muted = false,
@@ -23,20 +24,30 @@
 		ended,
 		slider,
 		duration,
-		audio;
+		audio,
+		playModeIcon = 'repeat';
 
 	onMount(() => {
 		audio.onended = async () => {
 			isPlay.set(false);
 			time = 0;
-			let nextSong = $index + 1;
-			index.set(nextSong);
 			let lastSong = songs.length - 1;
-			if ($index > lastSong) {
-				index.set(0);
-				onEndedSong(0, audio);
+			if ($playMode === PLAY_MODE[0]) {
+				let nextSong = $index + 1;
+				index.set(nextSong);
+				if ($index > lastSong) {
+					index.set(0);
+					onEndedSong(0, audio);
+				} else {
+					onEndedSong(nextSong, audio);
+				}
+			} else if ($playMode === PLAY_MODE[1]) {
+				const randomSong = songs[Math.floor(Math.random() * songs.length)];
+				const randomIndex = songs.indexOf(randomSong);
+				index.set(randomIndex);
+				onEndedSong($index, audio);
 			} else {
-				onEndedSong(nextSong, audio);
+				onEndedSong($index, audio);
 			}
 		};
 	});
@@ -99,6 +110,19 @@
 			showError();
 		}
 	};
+
+	const changeMode = () => {
+		if ($playMode === PLAY_MODE[0]) {
+			playMode.set(PLAY_MODE[1]);
+			playModeIcon = 'random';
+		} else if ($playMode === PLAY_MODE[1]) {
+			playMode.set(PLAY_MODE[2]);
+			playModeIcon = 'repeat-1';
+		} else {
+			playMode.set(PLAY_MODE[0]);
+			playModeIcon = 'repeat';
+		}
+	};
 </script>
 
 <svelte:head>
@@ -120,9 +144,11 @@
 		/>
 		<div class="card__minutes">
 			<p>{formatDuration(time)}</p>
-			<!-- {#if $source}
-				<button type="button"><i class="far fa-fw fa-random" /></button>
-			{/if} -->
+			{#if $source}
+				<button type="button" on:click={changeMode}
+					><i class="far fa-fw fa-{playModeIcon}" /></button
+				>
+			{/if}
 			<p>{formatDuration(duration)}</p>
 		</div>
 		<div class="card__actions">
@@ -239,6 +265,10 @@
 		margin-bottom: 1em;
 		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
 			'Open Sans', 'Helvetica Neue', sans-serif;
+	}
+
+	.card .card__minutes > button {
+		font-size: 1.5rem;
 	}
 
 	.card .card__actions > button {
