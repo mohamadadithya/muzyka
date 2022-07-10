@@ -120,6 +120,9 @@
 		/>
 		<div class="card__minutes">
 			<p>{formatDuration(time)}</p>
+			<!-- {#if $source}
+				<button type="button"><i class="far fa-fw fa-random" /></button>
+			{/if} -->
 			<p>{formatDuration(duration)}</p>
 		</div>
 		<div class="card__actions">
@@ -144,6 +147,7 @@
 				step=".001"
 			/>
 		</div>
+		<p class="card__copyright">&copy; 2022 by Mohamad Adithya</p>
 	</div>
 	<!-- Playlist Panel -->
 	<div class="card-playlist" style="height: 556px;">
@@ -189,7 +193,7 @@
 	.card .card__album {
 		margin-bottom: 1.5em;
 		border-radius: 0.3em;
-		width: 70%;
+		width: 100%;
 	}
 
 	.card .card__title {
@@ -232,6 +236,9 @@
 		align-items: center;
 		margin-top: 1em;
 		width: 100%;
+		margin-bottom: 1em;
+		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+			'Open Sans', 'Helvetica Neue', sans-serif;
 	}
 
 	.card .card__actions > button {
@@ -251,6 +258,11 @@
 
 	.card .card__minutes > p {
 		color: gray;
+	}
+
+	.card .card__copyright {
+		font-size: 0.7rem;
+		margin-top: 2.5em;
 	}
 
 	/* Playlist Panel */
@@ -304,6 +316,10 @@
 	@media (min-width: 992px) {
 		.container {
 			align-items: center;
+		}
+
+		.card .card__album {
+			width: 70%;
 		}
 	}
 </style>

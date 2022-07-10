@@ -7,4 +7,5 @@ export let source = writable(null),
             album = writable('Album illustration'),
             albumCover = writable('album.png'),
             isPlay = writable(false),
-            isLoaded = writable(false);
+            isLoaded = writable(false),
+            mode = writable('normal');

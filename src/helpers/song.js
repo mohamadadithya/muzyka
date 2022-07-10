@@ -30,3 +30,5 @@ export const showError = () => {
     });
     notyf.error('Please pick a song');
 }
+
+export const MODE = ['normal', 'random', 'single'];
