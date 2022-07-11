@@ -88,6 +88,28 @@
 		(await audio.paused) ? audio.play() : audio.pause();
 		(await audio.paused) ? isPlay.set(false) : isPlay.set(true);
 	};
+
+	const previousSong = async () => {
+		index.set($index - 1)
+		if($index < 0) {
+			const lastSong = songs.length - 1;
+			index.set(lastSong);
+			onEndedSong(lastSong, audio);
+		} else {
+			onEndedSong($index, audio)
+		}
+	}
+
+	const nextSong = async () => {
+		index.set($index + 1)
+		const lastSong = songs.length - 1;
+		if($index > lastSong) {
+			index.set(0);
+			onEndedSong(0, audio);
+		} else {
+			onEndedSong($index, audio);
+		}
+	}
 </script>
 
 <div class="container">
@@ -108,11 +130,11 @@
 			<p>{formatDuration(duration)}</p>
 		</div>
 		<div class="card__actions">
-			<button type="button"><i class="fas fa-fw fa-backward" /></button>
+			<button type="button" on:click={previousSong}><i class="fas fa-fw fa-backward" /></button>
 			<button type="button" on:click={playAudio} class="play"
 				><i class="fas fa-fw fa-{!$isPlay || ended ? 'play' : 'pause'}" /></button
 			>
-			<button type="button"><i class="fas fa-fw fa-forward" /></button>
+			<button type="button" on:click={nextSong}><i class="fas fa-fw fa-forward" /></button>
 		</div>
 		<div class="card__actions--volume">
 			<button type="button" on:click={muteVolume}
