@@ -9,13 +9,12 @@
 		albumCover,
 		album,
 		isLoaded,
-		index
+		index,
+		playMode
 	} from '../stores/song';
 	import SongBar from '../components/SongBar.svelte';
 	import { songs } from '../data/songs';
-	import { onEndedSong } from '../helpers/song';
-	import { Notyf } from 'notyf';
-	import 'notyf/notyf.min.css';
+	import { onEndedSong, PLAY_MODE, showError } from '../helpers/song';
 
 	let time = 0,
 		muted = false,
@@ -25,20 +24,30 @@
 		ended,
 		slider,
 		duration,
-		audio;
+		audio,
+		playModeIcon = 'repeat';
 
 	onMount(() => {
 		audio.onended = async () => {
 			isPlay.set(false);
 			time = 0;
-			let nextSong = $index + 1;
-			index.set(nextSong);
 			let lastSong = songs.length - 1;
-			if ($index > lastSong) {
-				index.set(0);
-				onEndedSong(0, audio);
+			if ($playMode === PLAY_MODE[0]) {
+				let nextSong = $index + 1;
+				index.set(nextSong);
+				if ($index > lastSong) {
+					index.set(0);
+					onEndedSong(0, audio);
+				} else {
+					onEndedSong(nextSong, audio);
+				}
+			} else if ($playMode === PLAY_MODE[1]) {
+				const randomSong = songs[Math.floor(Math.random() * songs.length)];
+				const randomIndex = songs.indexOf(randomSong);
+				index.set(randomIndex);
+				onEndedSong($index, audio);
 			} else {
-				onEndedSong(nextSong, audio);
+				onEndedSong($index, audio);
 			}
 		};
 	});
@@ -48,20 +57,7 @@
 			audio.paused ? audio.play() : audio.pause();
 			audio.paused ? isPlay.set(false) : isPlay.set(true);
 		} else {
-			const notyf = new Notyf({
-				position: {
-					x: 'right',
-					y: 'top'
-				},
-				types: [
-					{
-						type: 'error',
-						background: 'black',
-						duration: 2000
-    				}
-				]
-			});
-			notyf.error('Please pick a song');
+			showError();
 		}
 	};
 
@@ -89,28 +85,49 @@
 		(await audio.paused) ? isPlay.set(false) : isPlay.set(true);
 	};
 
-	const previousSong = async () => {
-		index.set($index - 1)
-		if($index < 0) {
-			const lastSong = songs.length - 1;
-			index.set(lastSong);
-			onEndedSong(lastSong, audio);
-		} else {
-			onEndedSong($index, audio)
-		}
-	}
+	const lastSong = songs.length - 1;
 
-	const nextSong = async () => {
-		index.set($index + 1)
-		const lastSong = songs.length - 1;
-		if($index > lastSong) {
-			index.set(0);
-			onEndedSong(0, audio);
-		} else {
+	const prevSong = () => {
+		if ($source) {
+			index.set($index - 1);
+			if ($index < 0) {
+				index.set(lastSong);
+			}
 			onEndedSong($index, audio);
+		} else {
+			showError();
 		}
-	}
+	};
+
+	const nextSong = () => {
+		if ($source) {
+			index.set($index + 1);
+			if ($index > lastSong) {
+				index.set(0);
+			}
+			onEndedSong($index, audio);
+		} else {
+			showError();
+		}
+	};
+
+	const changeMode = () => {
+		if ($playMode === PLAY_MODE[0]) {
+			playMode.set(PLAY_MODE[1]);
+			playModeIcon = 'random';
+		} else if ($playMode === PLAY_MODE[1]) {
+			playMode.set(PLAY_MODE[2]);
+			playModeIcon = 'repeat-1';
+		} else {
+			playMode.set(PLAY_MODE[0]);
+			playModeIcon = 'repeat';
+		}
+	};
 </script>
+
+<svelte:head>
+	<title>{$source ? `${$title} - ${$artist} | Muzyka` : 'Muzyka'}</title>
+</svelte:head>
 
 <div class="container">
 	<div class="card">
@@ -127,10 +144,15 @@
 		/>
 		<div class="card__minutes">
 			<p>{formatDuration(time)}</p>
+			{#if $source}
+				<button type="button" on:click={changeMode}
+					><i class="far fa-fw fa-{playModeIcon}" /></button
+				>
+			{/if}
 			<p>{formatDuration(duration)}</p>
 		</div>
 		<div class="card__actions">
-			<button type="button" on:click={previousSong}><i class="fas fa-fw fa-backward" /></button>
+			<button type="button" on:click={prevSong}><i class="fas fa-fw fa-backward" /></button>
 			<button type="button" on:click={playAudio} class="play"
 				><i class="fas fa-fw fa-{!$isPlay || ended ? 'play' : 'pause'}" /></button
 			>
@@ -151,13 +173,15 @@
 				step=".001"
 			/>
 		</div>
-		<button class="card__playlist-button">See Playlist</button>
+		<p class="card__copyright">&copy; 2022 by Mohamad Adithya</p>
 	</div>
 	<!-- Playlist Panel -->
-	<div class="card-playlist">
-		<h1>My Playlist</h1>
-		<p>{songs.length} {songs.length === 1 ? 'song' : 'songs'}</p>
-		<div class="card__container">
+	<div class="card-playlist" style="height: 556px;">
+		<div class="card-playlist__header">
+			<h1>My Playlist</h1>
+			<p>{songs.length} {songs.length === 1 ? 'song' : 'songs'}</p>
+		</div>
+		<div class="card-playlist__container" style="padding-bottom: {songs.length > 5 ? '0.9em' : 0};">
 			{#each songs as song, i}
 				<SongBar on:click={() => changeSong({ song }, i)} {song} />
 			{/each}
@@ -178,6 +202,7 @@
 	.container {
 		display: block;
 	}
+
 	.card {
 		display: flex;
 		align-items: center;
@@ -194,7 +219,7 @@
 	.card .card__album {
 		margin-bottom: 1.5em;
 		border-radius: 0.3em;
-		width: 70%;
+		width: 100%;
 	}
 
 	.card .card__title {
@@ -237,6 +262,13 @@
 		align-items: center;
 		margin-top: 1em;
 		width: 100%;
+		margin-bottom: 1em;
+		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+			'Open Sans', 'Helvetica Neue', sans-serif;
+	}
+
+	.card .card__minutes > button {
+		font-size: 1.5rem;
 	}
 
 	.card .card__actions > button {
@@ -254,27 +286,45 @@
 		background: none;
 	}
 
-	.card .card__playlist-button {
-		margin-top: 2em;
-		background: none;
-		text-transform: uppercase;
-		letter-spacing: 0.2em;
-		color: gray;
-	}
-
 	.card .card__minutes > p {
 		color: gray;
 	}
 
+	.card .card__copyright {
+		font-size: 0.7rem;
+		margin-top: 2.5em;
+	}
+
 	/* Playlist Panel */
-	.card-playlist > h1 {
+	.card-playlist {
+		overflow-y: scroll;
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
+	}
+
+	.card-playlist .card-playlist__container {
+		padding: 0 0.3em 0 0.3em;
+	}
+
+	.card-playlist::-webkit-scrollbar {
+		display: none;
+	}
+
+	.card-playlist .card-playlist__header {
+		position: sticky;
+		top: 0;
+		width: 100%;
+		background-color: white;
+	}
+
+	.card-playlist .card-playlist__header > h1 {
 		font-weight: 600;
 		font-size: 1.5rem;
 		text-transform: uppercase;
 		letter-spacing: 0.2em;
 	}
 
-	.card-playlist > p {
+	.card-playlist .card-playlist__header > p {
 		color: gray;
 		margin-bottom: 1em;
 	}
@@ -295,7 +345,11 @@
 
 	@media (min-width: 992px) {
 		.container {
-			align-items: flex-start;
+			align-items: center;
+		}
+
+		.card .card__album {
+			width: 70%;
 		}
 	}
 </style>

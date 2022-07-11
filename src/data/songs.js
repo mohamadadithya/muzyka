@@ -46,4 +46,40 @@ export const songs = [
             cover: 'let-it-bleed.jpg'
         }
     },
+    {
+        title: 'Planet Caravan',
+        filename: `${HOSTING_URL}ipkoupcos7hsuph/planet-caravan.mp3?dl=0`,
+        artist: 'Pantera',
+        album: {
+            name: 'Far Beyond Driven',
+            cover: 'far-beyond-driven.jpeg'
+        }
+    },
+    {
+        title: 'Ouch',
+        filename: `${HOSTING_URL}2m2uopq9jskl0jj/ouch.mp3?dl=0`,
+        artist: 'Bring Me The Horizon',
+        album: {
+            name: 'amo',
+            cover: 'amo.jpeg'
+        }
+    },
+    {
+        title: 'Zeitgeist',
+        filename: `${HOSTING_URL}udwou3jm08cuis0/zeitgeist.mp3?dl=0`,
+        artist: 'Black Sabbath',
+        album: {
+            name: '13',
+            cover: '13.jpeg'
+        }
+    },
+    {
+        title: 'Friends',
+        filename: `${HOSTING_URL}zcet6mgfvdwms45/friends.mp3?dl=0`,
+        artist: 'Led Zeppelin',
+        album: {
+            name: 'Led Zeppelin III',
+            cover: 'led-zeppelin-3.jpeg'
+        }
+    },
 ]
