@@ -172,7 +172,7 @@
 				step=".001"
 			/>
 		</div>
-		<p class="card__copyright">&copy; 2022 by Mohamad Adithya</p>
+		<p class="card__copyright">&copy; 2022 by <a href="https://m-adithya.my.id" target="_blank">Mohamad Adithya</a></p>
 	</div>
 	<!-- Playlist Panel -->
 	<div class="card-playlist" style="height: 556px;">
@@ -292,6 +292,10 @@
 	.card .card__copyright {
 		font-size: 0.7rem;
 		margin-top: 2.5em;
+	}
+
+	.card .card__copyright > a {
+		color: black;
 	}
 
 	/* Playlist Panel */
