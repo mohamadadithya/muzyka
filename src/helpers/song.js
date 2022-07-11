@@ -1,4 +1,4 @@
-import { title, artist, album, albumCover, isLoaded, source, isPlay } from '../stores/song';
+import { title, artist, album, albumCover, isLoaded, source, isPlay, lyrics } from '../stores/song';
 import { songs } from '../data/songs';
 import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
@@ -8,6 +8,7 @@ export const onEndedSong = async (index, audio) => {
     artist.set(songs[index].artist);
     album.set(songs[index].album.name);
     albumCover.set(songs[index].album.cover);
+    lyrics.set(songs[index].lyrics);
     isLoaded.set(false);
     await source.set(songs[index].filename);
     (await audio.paused) ? audio.play() : audio.pause();

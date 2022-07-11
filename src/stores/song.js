@@ -8,4 +8,5 @@ export let source = writable(null),
             albumCover = writable('album.png'),
             isPlay = writable(false),
             isLoaded = writable(false),
+            lyrics = writable(''),
             playMode = writable('normal');

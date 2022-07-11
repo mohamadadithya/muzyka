@@ -10,7 +10,8 @@
 		album,
 		isLoaded,
 		index,
-		playMode
+		playMode,
+lyrics
 	} from '../stores/song';
 	import SongBar from '../components/SongBar.svelte';
 	import { songs } from '../data/songs';
@@ -80,6 +81,7 @@
 		artist.set(song.artist);
 		album.set(song.album.name);
 		albumCover.set(song.album.cover);
+		lyrics.set(song.lyrics);
 		await source.set(song.filename);
 		playAudio();
 	};
@@ -122,6 +124,10 @@
 			playModeIcon = 'repeat';
 		}
 	};
+
+	let isLyricsPanel = false;
+
+	$: console.log($title);
 </script>
 
 <svelte:head>
@@ -133,6 +139,7 @@
 		<h1 class="card__title">{$title}</h1>
 		<p class="card__artist">{$artist}</p>
 		<img class="card__album" draggable="false" src="/img/{$albumCover}" alt={$album} />
+		<button type="button" on:click={() => isLyricsPanel = !isLyricsPanel} class="card__lyrics-playlist-btn">See {isLyricsPanel ? 'Playlist' : 'Lyrics'}</button>
 		<input
 			type="range"
 			on:input={seek}
@@ -177,15 +184,24 @@
 	<!-- Playlist Panel -->
 	<div class="card-playlist" style="height: 556px;">
 		<div class="card-playlist__header">
-			<h1>My Playlist</h1>
-			<p>{songs.length} {songs.length === 1 ? 'song' : 'songs'}</p>
+			{#if isLyricsPanel }
+				<h1 class="lyrics">Lyrics</h1>
+			{:else}
+				<h1>My Playlist</h1>
+				<p>{songs.length} {songs.length === 1 ? 'song' : 'songs'}</p>
+			{/if}
 		</div>
-		<div class="card-playlist__container" style="padding-bottom: {songs.length > 5 ? '0.9em' : 0};">
-			{#each songs as song, i}
-				<SongBar on:click={() => changeSong({ song }, i)} {song} />
-			{/each}
+		<div class="card-playlist__container" style="padding-bottom: {songs.length > 5 ? '1em' : 0}; {!isLyricsPanel ? 'padding: 0 0.3em 0.9em 0.3em;' : ''}">
+			{#if isLyricsPanel }
+				<p>{@html $lyrics}</p>
+			{:else}
+				{#each songs as song, i}
+					<SongBar on:click={() => changeSong({ song }, i)} {song} />
+				{/each}
+			{/if}
 		</div>
 	</div>
+	<!-- End of Playlist Panel -->
 </div>
 <audio
 	bind:duration
@@ -219,6 +235,13 @@
 		margin-bottom: 1.5em;
 		border-radius: 0.3em;
 		width: 100%;
+	}
+
+	.card .card__lyrics-playlist-btn {
+		margin-bottom: .5em;
+		font-family: 'Poppins', sans-serif;
+		text-transform: uppercase;
+		letter-spacing: .2em;
 	}
 
 	.card .card__title {
@@ -305,10 +328,6 @@
 		scrollbar-width: none; /* Firefox */
 	}
 
-	.card-playlist .card-playlist__container {
-		padding: 0 0.3em 0 0.3em;
-	}
-
 	.card-playlist::-webkit-scrollbar {
 		display: none;
 	}
@@ -325,6 +344,10 @@
 		font-size: 1.5rem;
 		text-transform: uppercase;
 		letter-spacing: 0.2em;
+	}
+
+	.card-playlist .card-playlist__header > h1:is(.lyrics) {
+		margin-bottom: .8em;
 	}
 
 	.card-playlist .card-playlist__header > p {

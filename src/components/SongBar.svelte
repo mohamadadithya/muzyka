@@ -6,11 +6,11 @@
 
 	$: if ($isPlay && song.title == $title) {
 		icon = 'pause';
-	} else if (!$isLoaded && song.title == $title) {
-		icon = 'spin fa-spinner';
 	} else {
 		icon = 'play';
 	}
+
+	$: console.log(song.title);
 </script>
 
 <div class="card">

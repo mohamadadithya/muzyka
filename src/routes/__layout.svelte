@@ -30,7 +30,7 @@
 
 	@media (min-width: 768px) {
 		main {
-			padding: 0 2em;
+			padding: 2em;
 		}
 	}
 </style>
