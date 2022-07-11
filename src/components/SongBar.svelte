@@ -1,5 +1,5 @@
 <script>
-	import { isPlay, isLoaded, title } from '../stores/song';
+	import { isPlay, title } from '../stores/song';
 
 	export let song;
 	let icon = 'play';
@@ -9,8 +9,6 @@
 	} else {
 		icon = 'play';
 	}
-
-	$: console.log(song.title);
 </script>
 
 <div class="card">
@@ -36,6 +34,7 @@
 		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 		border-radius: 1em;
 		margin-bottom: 1em;
+		animation: fade 0.4s alternate ease;
 	}
 
 	.card:last-child {

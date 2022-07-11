@@ -11,7 +11,7 @@
 		isLoaded,
 		index,
 		playMode,
-lyrics
+		lyrics
 	} from '../stores/song';
 	import SongBar from '../components/SongBar.svelte';
 	import { songs } from '../data/songs';
@@ -137,7 +137,11 @@ lyrics
 		<h1 class="card__title">{$title}</h1>
 		<p class="card__artist">{$artist}</p>
 		<img class="card__album" draggable="false" src="/img/{$albumCover}" alt={$album} />
-		<button type="button" on:click={() => isLyricsPanel = !isLyricsPanel} class="card__lyrics-playlist-btn">See {isLyricsPanel ? 'Playlist' : 'Lyrics'}</button>
+		<button
+			type="button"
+			on:click={() => ($source ? (isLyricsPanel = !isLyricsPanel) : showError())}
+			class="card__lyrics-playlist-btn">See {isLyricsPanel ? 'Playlist' : 'Lyrics'}</button
+		>
 		<input
 			type="range"
 			on:input={seek}
@@ -177,20 +181,27 @@ lyrics
 				step=".001"
 			/>
 		</div>
-		<p class="card__copyright">&copy; 2022 by <a href="https://m-adithya.my.id" target="_blank">Mohamad Adithya</a></p>
+		<p class="card__copyright">
+			&copy; 2022 by <a href="https://m-adithya.my.id" target="_blank">Mohamad Adithya</a>
+		</p>
 	</div>
 	<!-- Playlist Panel -->
 	<div class="card-playlist" style="height: 556px;">
 		<div class="card-playlist__header">
-			{#if isLyricsPanel }
+			{#if isLyricsPanel}
 				<h1 class="lyrics">Lyrics</h1>
 			{:else}
 				<h1>My Playlist</h1>
 				<p>{songs.length} {songs.length === 1 ? 'song' : 'songs'}</p>
 			{/if}
 		</div>
-		<div class="card-playlist__container" style="padding-bottom: {songs.length > 5 ? '1em' : 0}; {!isLyricsPanel ? 'padding: 0 0.3em 0.9em 0.3em;' : ''}">
-			{#if isLyricsPanel }
+		<div
+			class="card-playlist__container"
+			style="padding-bottom: {songs.length > 5 ? '1em' : 0}; {!isLyricsPanel
+				? 'padding: 0 0.3em 0.9em 0.3em;'
+				: ''}"
+		>
+			{#if isLyricsPanel}
 				<p>{@html $lyrics}</p>
 			{:else}
 				{#each songs as song, i}
@@ -236,10 +247,10 @@ lyrics
 	}
 
 	.card .card__lyrics-playlist-btn {
-		margin-bottom: .5em;
+		margin-bottom: 0.5em;
 		font-family: 'Poppins', sans-serif;
 		text-transform: uppercase;
-		letter-spacing: .2em;
+		letter-spacing: 0.2em;
 	}
 
 	.card .card__title {
@@ -345,7 +356,7 @@ lyrics
 	}
 
 	.card-playlist .card-playlist__header > h1:is(.lyrics) {
-		margin-bottom: .8em;
+		margin-bottom: 0.8em;
 	}
 
 	.card-playlist .card-playlist__header > p {
