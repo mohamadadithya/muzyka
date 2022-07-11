@@ -126,8 +126,6 @@ lyrics
 	};
 
 	let isLyricsPanel = false;
-
-	$: console.log($title);
 </script>
 
 <svelte:head>
