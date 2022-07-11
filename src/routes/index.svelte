@@ -15,7 +15,6 @@
 	import SongBar from '../components/SongBar.svelte';
 	import { songs } from '../data/songs';
 	import { onEndedSong, PLAY_MODE, showError } from '../helpers/song';
-	import LyricsPanel from '../components/LyricsPanel.svelte';
 
 	let time = 0,
 		muted = false,

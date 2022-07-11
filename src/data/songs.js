@@ -33,8 +33,8 @@ export const songs = [
         filename: `${HOSTING_URL}aoxht4yew1oi9v4/prodigal-son.mp3?dl=0`,
         artist: 'The Rolling Stones',
         album: {
-            name: 'Let it Bleed',
-            cover: 'let-it-bleed.jpg'
+            name: 'Beggars Banquet',
+            cover: 'beggars-banquet.jpg'
         }
     },
     {
@@ -80,6 +80,33 @@ export const songs = [
         album: {
             name: 'Led Zeppelin III',
             cover: 'led-zeppelin-3.jpeg'
+        }
+    },
+    {
+        title: 'Stray Cat Blues',
+        filename: `${HOSTING_URL}36knfwxfv5vjbvl/stray-cat-blues.mp3?dl=0`,
+        artist: 'The Rolling Stones',
+        album: {
+            name: 'Beggars Banquet',
+            cover: 'beggars-banquet.jpg'
+        }
+    },
+    {
+        title: 'Wonderful Tonight',
+        filename: `${HOSTING_URL}xh7f8hmd7rlyblg/wonderful-tonight.mp3?dl=0`,
+        artist: 'Eric Clapton',
+        album: {
+            name: 'The Cream of Clapton',
+            cover: 'the-cream-of-clapton.jpg'
+        }
+    },
+    {
+        title: 'Terraplane Blues',
+        filename: `${HOSTING_URL}bii4jnv1q1rylh7/terraplane-blues.mp3?dl=0`,
+        artist: 'Robert Johnson',
+        album: {
+            name: 'King of The Delta Blues Singers',
+            cover: 'king-of-the-delta-blues.jpg'
         }
     },
 ]
