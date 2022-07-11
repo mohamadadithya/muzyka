@@ -15,6 +15,7 @@
 	import SongBar from '../components/SongBar.svelte';
 	import { songs } from '../data/songs';
 	import { onEndedSong, PLAY_MODE, showError } from '../helpers/song';
+	import LyricsPanel from '../components/LyricsPanel.svelte';
 
 	let time = 0,
 		muted = false,
@@ -81,8 +82,7 @@
 		album.set(song.album.name);
 		albumCover.set(song.album.cover);
 		await source.set(song.filename);
-		(await audio.paused) ? audio.play() : audio.pause();
-		(await audio.paused) ? isPlay.set(false) : isPlay.set(true);
+		playAudio();
 	};
 
 	const lastSong = songs.length - 1;
