@@ -210,31 +210,31 @@ export const songs = [
             name: 'amo',
             cover: 'amo.jpeg'
         },
-        lyrics: `Tu as tué mon bébé
-        Na, na, na, na
-        Na, na, na, na, na, na, na
-        Na, na, na, na
-        Na, na, na, na
-        Na, na, na, na, na, na, na
-        Na, na, na, na
-        I always knew this is gonna end in tears
-        Didn't think your wrists will keep a souvenir
-        And I thought that I had heard it all
-        Till I heard your lover screaming down the phone
-        I know I said I was under your spell
-        But this hex is on another level
-        And I know I said you could drag me through Hell
-        But I hoped you wouldn't fuck the Devil
-        Na, na, na, na
-        Na, na, na, na, na, na, na
-        Na, na, na, na
-        This was gonna end in tears (Na, na, na, na)
-        Didn't think your wrists would keep a souvenir
-        And I thought that I heard it all
-        Till I heard your lover screaming down the phone
-        I know I said I was under your spell
-        But this hex is on another level
-        And I know I said you could drag me through Hell
+        lyrics: `Tu as tu&eacute; mon b&eacute;b&eacute;<br>
+        Na, na, na, na<br>
+        Na, na, na, na, na, na, na<br>
+        Na, na, na, na<br>
+        Na, na, na, na<br>
+        Na, na, na, na, na, na, na<br>
+        Na, na, na, na<br>
+        I always knew this is gonna end in tears<br>
+        Didn't think your wrists will keep a souvenir<br>
+        And I thought that I had heard it all<br>
+        Till I heard your lover screaming down the phone<br>
+        I know I said I was under your spell<br>
+        But this hex is on another level<br>
+        And I know I said you could drag me through Hell<br>
+        But I hoped you wouldn't fuck the Devil<br>
+        Na, na, na, na<br>
+        Na, na, na, na, na, na, na<br>
+        Na, na, na, na<br>
+        This was gonna end in tears (Na, na, na, na)<br>
+        Didn't think your wrists would keep a souvenir<br>
+        And I thought that I heard it all<br>
+        Till I heard your lover screaming down the phone<br>
+        I know I said I was under your spell<br>
+        But this hex is on another level<br>
+        And I know I said you could drag me through Hell<br>
         Still hoped you wouldn't fuck the Devil`
     },
     {
